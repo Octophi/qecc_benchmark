@@ -1,7 +1,4 @@
 from qiskit import QuantumCircuit, ClassicalRegister, QuantumRegister, QISKitError
-import qiskit
-import importlib
-importlib.reload(qiskit)
 
 def buildCirc(qc, qr, circuitArray, perm):
     for gate in circuitArray:
