@@ -21,14 +21,11 @@ def addGate(qc, qr, gate, perm):
     
     # get appropriate function to add desired generators
     addGens = gateSet.get(gateSpec[0])
-    if addGens == None:
+    if addGens is None:
         print("Some nonsense was ignored")
     else:
         addGens(qc, qr, gateSpec[1:],perm)
-    if gateSpec[0] == "Permute":
-        return 1
-    else:
-        return 0
+    
     
 def addX(qc, qr, gateNums,perm):
     for num in gateNums:
