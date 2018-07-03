@@ -19,8 +19,11 @@ def addGate(qc, qr, gate, perm):
     gateSpec = gate.split()
     
     # get appropriate function to add desired generators
-    addGens = gateSet.get(gateSpec[0], lambda:"Invalid gate")
-    addGens(qc, qr, gateSpec[1:],perm)
+    addGens = gateSet.get(gateSpec[0])
+    if addGens == None:
+        print("Some nonsense was ignored")
+    else:
+        addGens(qc, qr, gateSpec[1:],perm)
     
 def addX(qc, qr, gateNums,perm):
     for num in gateNums:
