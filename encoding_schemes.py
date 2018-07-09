@@ -15,9 +15,13 @@ class Uncoded:
     # Sets mapping of qubit numbering so that qubits numbered "1 to n" appear
     # in that order left to right
     perm = {}
-    for i in range(n):
-        perm[n-i] = i
+
+    def setPerm(self):
+        n = self.n
+        for i in range(n):
+            self.perm[n-i] = i
         
+    
     def prepareZeros(self,qc,qr):
         return
         
@@ -41,8 +45,11 @@ class FourTwoTwo:
     # Sets mapping of qubit numbering so that qubits numbered "1 to n" appear
     # in that order left to right
     perm = {}
-    for i in range(n):
-        perm[n-i] = i
+
+    def setPerm(self):
+        n = self.n
+        for i in range(n):
+            self.perm[n-i] = i
 
     # prepare a state of all zeros
     def prepareZeros(self,qc,qr):

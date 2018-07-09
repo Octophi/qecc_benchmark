@@ -1,9 +1,30 @@
 from qiskit import QuantumCircuit, ClassicalRegister, QuantumRegister, QISKitError
 
 def buildCirc(qc, qr, cr, circuitArray, perm):
+    n = len(perm)
+    lastPerm = {}
+    firstPerm = perm.copy()
+    print(perm)
     for gate in circuitArray:
+        print(gate)
         lastGate = addGate(qc, qr, gate, perm)
-    qc.measure(qr,cr)
+        #print(lastGate)
+        #if "Permute" in gate:
+        #    lastPerm = lastGate
+        print("Perm: "+str(perm))
+        #print("LastPerm: " + str(lastPerm))
+    qc.barrier()
+    '''
+    for i in range(n):
+        print(str(perm[i+1])+str(i))
+        '''
+    registerPerm = {}
+    for i in perm.keys():
+        registerPerm[firstPerm[i]] = perm[i]
+    print(registerPerm)
+    for i in range(n):
+        qc.measure(qr[registerPerm[i]],cr[i])
+    #qc.measure(qr,cr)
 
 def addGate(qc, qr, gate, perm):
     gateSet = {
@@ -58,6 +79,19 @@ def addCZ(qc, qr, gateNums,perm):
     qc.cz(qr[qub1], qr[qub2])
 
 def permute(qc, qr, gateOrder,perm):
+    n = len(perm)
     permCopy = perm.copy()
-    for i in range(len(perm)):
+    for i in range(n):
         perm[i+1] = permCopy[int(gateOrder[i])]
+    print(perm)
+    
+    # this keeps track of the last permutation that occurred
+    # so we can measure by it
+    lastPerm = {}
+    for i in range(n):
+        lastPerm[n-i] = i
+    lastPermCopy = lastPerm.copy()
+    for i in range(n):
+        lastPerm[i+1] = lastPermCopy[int(gateOrder[i])]
+    print("Last Perm:" + str(lastPerm))
+    return lastPerm
