@@ -1,0 +1,83 @@
+P1 Gate Benchmark 7/9 ibmqx4, reps = 1
+
+Uncoded
+
+Qconfig loaded from C:\Users\ddrsq\OneDrive\Quantum\qecc_benchmark\Qconfig.py.
+
+Available backends:  ['ibmq_qasm_simulator', 'ibmqx5', 'local_unitary_simulator', 'local_qasm_simulator', 'ibmqx2', 'ibmqx4', 'local_statevector_simulator', 'local_clifford_simulator']
+Circuit is: ['P 1']
+Compiler is: 0
+{'00': 993, '01': 12, '10': 19}
+Average of success rates is: 0.9697265625
+
+Circuit is: ['P 1']
+Compiler is: 1
+{'00': 156, '01': 3, '10': 856, '11': 9}
+Average of success rates is: 0.8359375
+
+Circuit is: ['P 1']
+Compiler is: 2
+{'00': 76, '01': 937, '11': 11}
+Average of success rates is: 0.9150390625
+
+Circuit is: ['P 1']
+Compiler is: 3
+{'00': 12, '01': 104, '10': 70, '11': 838}
+Average of success rates is: 0.818359375
+
+Time running: 779.2191696166992
+
+
+Normalized
+
+Qconfig loaded from C:\Users\ddrsq\OneDrive\Quantum\qecc_benchmark\Qconfig.py.
+
+Available backends:  ['ibmq_qasm_simulator', 'ibmqx5', 'local_unitary_simulator', 'local_qasm_simulator', 'ibmqx2', 'ibmqx4', 'local_statevector_simulator', 'local_clifford_simulator']
+Circuit is: ['P 1  2' 'CZ 1  2']
+Compiler is: 0
+{'0000': 374, '0001': 28, '0010': 7, '0011': 31, '0100': 25, '0101': 8, '0110': 7, '0111': 51, '1000': 39, '1001': 10, '1010': 5, '1011': 30, '1100': 39, '1101': 59, '1110': 40, '1111': 271}
+Average of success rates is: 0.8657718120805369
+
+Circuit is: ['P 1  2' 'CZ 1  2']
+Compiler is: 1
+{'0000': 19, '0001': 40, '0010': 103, '0011': 7, '0100': 26, '0101': 210, '0110': 26, '0111': 10, '1000': 55, '1001': 29, '1010': 257, '1011': 19, '1100': 19, '1101': 152, '1110': 49, '1111': 3}
+Average of success rates is: 0.8192982456140351
+
+Circuit is: ['P 1  2' 'CZ 1  2']
+Compiler is: 2
+{'0000': 28, '0001': 54, '0010': 37, '0011': 298, '0100': 69, '0101': 11, '0110': 11, '0111': 18, '1000': 77, '1001': 11, '1010': 6, '1011': 36, '1100': 303, '1101': 25, '1110': 20, '1111': 20}
+Average of success rates is: 0.873546511627907
+
+Circuit is: ['P 1  2' 'CZ 1  2']
+Compiler is: 3
+{'0000': 19, '0001': 60, '0010': 29, '0011': 4, '0100': 47, '0101': 21, '0110': 212, '0111': 11, '1000': 72, '1001': 300, '1010': 24, '1011': 11, '1100': 32, '1101': 50, '1110': 122, '1111': 10}
+Average of success rates is: 0.8231511254019293
+
+Time running: 723.3208620548248
+
+Centralized
+
+Qconfig loaded from C:\Users\ddrsq\OneDrive\Quantum\qecc_benchmark\Qconfig.py.
+
+Available backends:  ['ibmq_qasm_simulator', 'ibmqx5', 'local_unitary_simulator', 'local_qasm_simulator', 'ibmqx2', 'ibmqx4', 'local_statevector_simulator', 'local_clifford_simulator']
+Circuit is: ['P 3  4' 'CZ 1  3' 'CZ 2  3']
+Compiler is: 0
+{'0000': 281, '0010': 61, '0001': 28, '0011': 61, '0100': 31, '0110': 20, '0101': 18, '0111': 59, '1000': 48, '1010': 22, '1001': 18, '1011': 46, '1100': 95, '1110': 53, '1101': 53, '1111': 130}
+Average of success rates is: 0.6372093023255814
+
+Circuit is: ['P 3  4' 'CZ 1  3' 'CZ 2  3']
+Compiler is: 1
+{'0000': 72, '0001': 100, '1000': 43, '1001': 48, '0010': 83, '0011': 15, '1010': 121, '1011': 14, '0100': 52, '0101': 159, '1100': 32, '1101': 48, '0110': 81, '0111': 27, '1110': 116, '1111': 13}
+Average of success rates is: 0.5175600739371534
+
+Circuit is: ['P 3  4' 'CZ 1  3' 'CZ 2  3']
+Compiler is: 2
+{'0000': 101, '0001': 75, '0010': 83, '0011': 192, '0100': 63, '0101': 10, '0110': 7, '0111': 30, '1000': 76, '1001': 19, '1010': 16, '1011': 31, '1100': 194, '1101': 38, '1110': 35, '1111': 54}
+Average of success rates is: 0.6509274873524452
+
+Circuit is: ['P 3  4' 'CZ 1  3' 'CZ 2  3']
+Compiler is: 3
+{'0000': 40, '0001': 114, '0100': 44, '0101': 23, '0010': 46, '0011': 19, '0110': 170, '0111': 13, '1000': 50, '1001': 236, '1100': 13, '1101': 22, '1010': 60, '1011': 33, '1110': 129, '1111': 12}
+Average of success rates is: 0.7085514834205934
+
+Time running: 413.99631452560425
