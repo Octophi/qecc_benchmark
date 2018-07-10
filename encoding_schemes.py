@@ -1,4 +1,5 @@
 from qiskit import QuantumCircuit, ClassicalRegister, QuantumRegister, QISKitError
+from qiskit import available_backends, register, execute, get_backend
 
 
 # This file contains all the encoding schemes we would like to implement.
@@ -8,9 +9,14 @@ from qiskit import QuantumCircuit, ClassicalRegister, QuantumRegister, QISKitErr
 
 
 # Grabs quantum register k from qc
-def getReg(qc,k):   
+def getQReg(qc,k):   
     desired = list(qc.get_qregs().items())
-    return desired[k][1]    
+    return desired[k][1]
+
+# Grabs classical register k from qc
+def getCReg(qc,k):   
+    desired = list(qc.get_cregs().items())
+    return desired[k][1]  
 
 class Uncoded:
     # Defines number of qubits for code
@@ -29,10 +35,12 @@ class Uncoded:
             self.perm[n-i] = i
         
     
-    def prepareZeros(self,qc,qr):
+    def prepareZeros(self,qc):
         return
         
-    def setInput(self,qc,qr,compiler):
+    def setInput(self,qc,compiler):
+        qr = getQReg(qc,0)
+        
         if compiler == 0:
             return
         elif compiler == 1:
@@ -59,7 +67,9 @@ class FourTwoTwo:
             self.perm[n-i] = i
 
     # prepare a state of all zeros
-    def prepareZeros(self,qc,qr):
+    def prepareZeros(self,qc):
+        qr = getQReg(qc,0)
+        
         qc.h(qr[1])
         qc.barrier()
         qc.cx(qr[1],qr[0])
@@ -69,7 +79,9 @@ class FourTwoTwo:
         qc.cx(qr[2],qr[3])
         qc.barrier()
         
-    def setInput(self, qc, qr, compiler):
+    def setInput(self, qc, compiler):
+        qr = getQReg(qc,0)
+        
         if compiler == 0: 
             return
         elif compiler == 1:
@@ -112,15 +124,16 @@ class FiveOneThree:
         #FILL ME IN
         # First time we add error correction
         # 2 ancilla qubits used to check
-        qr = getReg(qc,0)
+        qr = getQReg(qc,0)
         
         anc = QuantumRegister(2)
         cr2 = ClassicalRegister(2)
         qc.add(anc)
         qc.add(cr2)
-        qc.reset(anc)
         
-    def setInput(self, qc, qr, compiler):
+    def setInput(self, qc, compiler):
+        qr = getQReg(qc,0)
+        
         if compiler == 0: 
             return
         elif compiler == 1:
@@ -130,135 +143,68 @@ class FiveOneThree:
         qc.barrier()
 
     # Measure x from qubit a to target b
-    def xMeas(self,qc,qr,anc,a,b):
-        a = perm[a]
-        b = ind[b]
+    def xMeas(self,qc,a,b):
+        qr = getQReg(qc,0)
+        anc = getQReg(qc,1)
+        
+        a = self.perm[a]
+        b = self.ind[b]
         qc.h(qr[a])
         qc.cx(qr[a],anc[b])
         qc.h(qr[a])
 
-    def zMeas(self,qc,qr,anc,a,b):
-        a = perm[a]
-        b = ind[b]
+    def zMeas(self,qc,a,b):
+        qr = getQReg(qc,0)
+        anc = getQReg(qc,1)
+        
+        a = self.perm[a]
+        b = self.ind[b]
         qc.cx(qr[a],anc[b])
 
     # stab is stabilizer number, flag is boolean 
     def measure(self, qc, stab, flag):
-        qr = getReg(qc,0)
-        anc = getReg(qc,1)
+        qr = getQReg(qc,0)
+        anc = getQReg(qc,1)
+        reg = getCReg(qc,1)
+        
         qc.reset(anc)
+
 
         # stabilizer 0 is XZXXI
         if stab ==0:
             if flag:
                 qc.h(anc[0])
-            self.xMeas(self,qc,qr,1,6)
+            self.xMeas(qc,1,6)
             if flag:
                 qc.cx(anc[0],anc[1])
-            self.zMeas(self,qc,qr,2,6)
-            self.zMeas(self,qc,qr,3,6)
+            self.zMeas(qc,2,6)
+            self.zMeas(qc,3,6)
             if flag:
                 qc.cx(anc[0],anc[1])
-            self.xMeas(self,qc,qr,4,6)
+            self.xMeas(qc,4,6)
+
             # Check syndrome
-            qc.measure(anc[1],cr[0])
+            qc.measure(anc[1],reg[0])
 
             # Check flag
-            qc.h(anc[0])
-            qc.measure(anc[0],cr[1])
-
-            print("Synd: "+cr[0])
-            print("Flag: "+cr[1])
-
-        # stabilizer 1 is IXZZX
-        if stab ==1:
             if flag:
                 qc.h(anc[0])
-            self.xMeas(self,qc,qr,1,6)
-            if flag:
-                qc.cx(anc[0],anc[1])
-            self.zMeas(self,qc,qr,2,6)
-            self.zMeas(self,qc,qr,3,6)
-            if flag:
-                qc.cx(anc[0],anc[1])
-            self.xMeas(self,qc,qr,4,6)
-            # Check if it's a zero or a one
-            qc.measure(anc[1],cr[0])
-            qc.measure(anc[0],cr[1])
+                qc.measure(anc[0],reg[1])
 
-        # stabilizer 2 is XIXZZ
-        if stab ==0:
-            if flag:
-                qc.h(anc[0])
-            self.xMeas(self,qc,qr,1,6)
-            if flag:
-                qc.cx(anc[0],anc[1])
-            self.zMeas(self,qc,qr,2,6)
-            self.zMeas(self,qc,qr,3,6)
-            if flag:
-                qc.cx(anc[0],anc[1])
-            self.xMeas(self,qc,qr,4,6)
-            # Check if it's a zero or a one
-            qc.measure(anc[1],cr[0])
-            qc.measure(anc[0],cr[1])
+            job = execute(qc,backend)
+            result = job.result()
+            data = result.get_counts()
 
-        # stabilizer 3 is ZXIXZ
-        if stab ==0:
-            if flag:
-                qc.h(anc[0])
-            self.xMeas(self,qc,qr,1,6)
-            if flag:
-                qc.cx(anc[0],anc[1])
-            self.zMeas(self,qc,qr,2,6)
-            self.zMeas(self,qc,qr,3,6)
-            if flag:
-                qc.cx(anc[0],anc[1])
-            self.xMeas(self,qc,qr,4,6)
-            # Check if it's a zero or a one
-            qc.measure(anc[1],cr[0])
-            qc.measure(anc[0],cr[1])
+            print(data)
+
+            print("Synd: "+str(reg[0]))
+            
+            if flag:            
+                print("Flag: "+str(reg[1]))
+
+
 
         
-#    def correct(self, qc, qr):
+#    def correct(self, qc):
         
 
-class SixFourTwo:
-    # Defines number of qubits for code
-    n = 6
-    
-    # UNFINISHED
-    # If we want to generalize the idea of valid outputs then we
-    # eventually need heavier machinery, possibly integrated with matlab
-    validOutputs = ["000000", "111111", "0101", "1010", "0011", "1100", "0110", "1001"]
-
-    # Sets mapping of qubit numbering
-    perm = {}
-    for i in range(n):
-        perm[n-i] = i
-
-    # UNFINISHED
-    def prepareZeros(self,qc,qr):
-        qc.h(qr[1])
-        qc.barrier()
-        qc.cx(qr[1],qr[0])
-        qc.barrier()
-        qc.cx(qr[1],qr[2])
-        qc.barrier()
-        qc.cx(qr[2],qr[3])
-        qc.barrier()
-
-    # UNFINISHED
-    def setInput(self, qc, qr, compiler):
-        if compiler == 0: 
-            return
-        elif compiler == 1:
-            qc.x(qr[0])
-            qc.x(qr[2])
-        elif compiler == 2:
-            qc.x(qr[0])
-            qc.x(qr[1])
-        elif compiler == 3:
-            qc.x(qr[2])
-            qc.x(qr[1])
-        qc.barrier()
-    
