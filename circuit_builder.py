@@ -4,27 +4,16 @@ def buildCirc(qc, qr, cr, circuitArray, perm):
     n = len(perm)
     lastPerm = {}
     firstPerm = perm.copy()
-    #print(perm)
     for gate in circuitArray:
         #print(gate)
         addGate(qc, qr, gate, perm)
-        #print(lastGate)
-        #if "Permute" in gate:
-        #    lastPerm = lastGate
-        #print("Perm: "+str(perm))
-        #print("LastPerm: " + str(lastPerm))
     qc.barrier()
-    '''
-    for i in range(n):
-        print(str(perm[i+1])+str(i))
-        '''
+
     registerPerm = {}
     for i in perm.keys():
         registerPerm[firstPerm[i]] = perm[i]
-    #print(registerPerm)
     for i in range(n):
         qc.measure(qr[registerPerm[i]],cr[i])
-    #qc.measure(qr,cr)
 
 def addGate(qc, qr, gate, perm):
     gateSet = {
