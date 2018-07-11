@@ -1,21 +1,30 @@
 from qiskit import QuantumCircuit, ClassicalRegister, QuantumRegister, QISKitError
 
-def buildCirc(qc, qr, cr, circuitArray, perm):
+# Grabs quantum register k from qc
+def getQReg(qc,k):   
+    desired = list(qc.get_qregs().items())
+    return desired[k][1]
+
+def buildCirc(qc, cr, circuitArray, perm):
+    qr = getQReg(qc,0)
     n = len(perm)
-    lastPerm = {}
+    
     firstPerm = perm.copy()
     for gate in circuitArray:
         #print(gate)
-        addGate(qc, qr, gate, perm)
+        addGate(qc, gate, perm)
     qc.barrier()
 
     registerPerm = {}
     for i in perm.keys():
         registerPerm[firstPerm[i]] = perm[i]
-    for i in range(n):
-        qc.measure(qr[registerPerm[i]],cr[i])
 
-def addGate(qc, qr, gate, perm):
+    return registerPerm
+
+
+
+def addGate(qc, gate, perm):
+    qr = getQReg(qc,0)
     gateSet = {
         "X": addX,
         "Z": addZ,
@@ -34,40 +43,52 @@ def addGate(qc, qr, gate, perm):
     if addGens is None:
         print("Some nonsense was ignored")
     else:
-        addGens(qc, qr, gateSpec[1:],perm)
+        addGens(qc, gateSpec[1:],perm)
     
     
-def addX(qc, qr, gateNums,perm):
+def addX(qc, gateNums,perm):
+    qr = getQReg(qc,0)
+    
     for num in gateNums:
         qub = perm[int(num)]
         qc.x(qr[qub])
         
-def addZ(qc, qr, gateNums,perm):
+def addZ(qc, gateNums,perm):
+    qr = getQReg(qc,0)
+    
     for num in gateNums:
         qub = perm[int(num)]
         qc.z(qr[qub])
 
-def addH(qc, qr, gateNums,perm):
+def addH(qc, gateNums,perm):
+    qr = getQReg(qc,0)
+    
     for num in gateNums:
         qub = perm[int(num)]
         qc.h(qr[qub])
         
-def addS(qc, qr, gateNums,perm):
+def addS(qc, gateNums,perm):
+    qr = getQReg(qc,0)
+    
     for num in gateNums:
         qub = perm[int(num)]
         qc.s(qr[qub])
         
-def addCX(qc, qr, gateNums,perm):
+def addCX(qc, gateNums,perm):
+    qr = getQReg(qc,0)
+    
     qub1 = perm[int(gateNums[0])]
     qub2 = perm[int(gateNums[1])]
     qc.cx(qr[qub1], qr[qub2])
     
-def addCZ(qc, qr, gateNums,perm):
+def addCZ(qc, gateNums,perm):
+    qr = getQReg(qc,0)
+    
     qub1 = perm[int(gateNums[0])]
     qub2 = perm[int(gateNums[1])]
     qc.cz(qr[qub1], qr[qub2])
 
-def permute(qc, qr, gateOrder,perm):
+def permute(qc, gateOrder,perm):
     n = len(perm)
     permCopy = perm.copy()
     for i in range(n):
